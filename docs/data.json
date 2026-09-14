@@ -3,6 +3,39 @@
  "season_label": "2026-27",
  "owners": [
   {
+   "name": "盛輔",
+   "total": 54.7,
+   "players": [
+    "朝倉 康心",
+    "醍醐 大",
+    "内川 幸太郎",
+    "伊達 朱里紗"
+   ],
+   "rank": 1
+  },
+  {
+   "name": "松井",
+   "total": 44.0,
+   "players": [
+    "逢川 恵夢",
+    "石井 一馬",
+    "永井 孝典",
+    "佐々木 寿人"
+   ],
+   "rank": 2
+  },
+  {
+   "name": "宮下",
+   "total": 7.4,
+   "players": [
+    "松本 吉弘",
+    "園田 賢",
+    "竹内 元太",
+    "佐野 ひなこ"
+   ],
+   "rank": 3
+  },
+  {
    "name": "吉國",
    "total": 0.0,
    "players": [
@@ -11,7 +44,7 @@
     "鈴木 たろう",
     "岡田 紗佳"
    ],
-   "rank": 1
+   "rank": 4
   },
   {
    "name": "金城",
@@ -22,29 +55,7 @@
     "阿久津 翔太",
     "浅見 真紀"
    ],
-   "rank": 1
-  },
-  {
-   "name": "杉江",
-   "total": 0.0,
-   "players": [
-    "滝沢 和典",
-    "三浦 智博",
-    "瀬戸熊 直樹",
-    "瑞原 明奈"
-   ],
-   "rank": 1
-  },
-  {
-   "name": "宮下",
-   "total": 0.0,
-   "players": [
-    "園田 賢",
-    "竹内 元太",
-    "松本 吉弘",
-    "佐野 ひなこ"
-   ],
-   "rank": 1
+   "rank": 4
   },
   {
    "name": "蓮池",
@@ -55,29 +66,7 @@
     "東城 りお",
     "鈴木 大介"
    ],
-   "rank": 1
-  },
-  {
-   "name": "松井",
-   "total": 0.0,
-   "players": [
-    "佐々木 寿人",
-    "石井 一馬",
-    "永井 孝典",
-    "逢川 恵夢"
-   ],
-   "rank": 1
-  },
-  {
-   "name": "盛輔",
-   "total": 0.0,
-   "players": [
-    "醍醐 大",
-    "朝倉 康心",
-    "内川 幸太郎",
-    "伊達 朱里紗"
-   ],
-   "rank": 1
+   "rank": 4
   },
   {
    "name": "宏樹",
@@ -88,49 +77,86 @@
     "HIRO 柴田",
     "中田 花奈"
    ],
-   "rank": 1
+   "rank": 4
   },
   {
    "name": "渡邊",
-   "total": 0.0,
+   "total": -15.7,
    "players": [
     "仲林 圭",
     "白鳥 翔",
     "尻無濱 航",
     "日向 藍子"
    ],
-   "rank": 1
+   "rank": 8
+  },
+  {
+   "name": "杉江",
+   "total": -90.4,
+   "players": [
+    "瀬戸熊 直樹",
+    "瑞原 明奈",
+    "滝沢 和典",
+    "三浦 智博"
+   ],
+   "rank": 9
   }
  ],
  "players": [
   {
-   "name": "石井 一馬",
+   "name": "逢川 恵夢",
    "team": "EARTH JETS",
    "team_id": "T011",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
+   "games": 1,
+   "points": 58.0,
+   "avg_rank": 1.0,
+   "top": 1,
    "last": 0,
    "owners": [
     "松井"
    ]
   },
   {
-   "name": "三浦 智博",
-   "team": "EARTH JETS",
-   "team_id": "T011",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
+   "name": "朝倉 康心",
+   "team": "U-NEXT Pirates",
+   "team_id": "T007",
+   "games": 1,
+   "points": 54.7,
+   "avg_rank": 1.0,
+   "top": 1,
    "last": 0,
    "owners": [
-    "杉江"
+    "盛輔"
    ]
   },
   {
-   "name": "逢川 恵夢",
+   "name": "松本 吉弘",
+   "team": "渋谷ABEMAS",
+   "team_id": "T004",
+   "games": 1,
+   "points": 7.4,
+   "avg_rank": 2.0,
+   "top": 0,
+   "last": 0,
+   "owners": [
+    "宮下"
+   ]
+  },
+  {
+   "name": "仲林 圭",
+   "team": "U-NEXT Pirates",
+   "team_id": "T007",
+   "games": 1,
+   "points": 3.8,
+   "avg_rank": 2.0,
+   "top": 0,
+   "last": 0,
+   "owners": [
+    "渡邊"
+   ]
+  },
+  {
+   "name": "石井 一馬",
    "team": "EARTH JETS",
    "team_id": "T011",
    "games": 0,
@@ -234,32 +260,6 @@
    ]
   },
   {
-   "name": "仲林 圭",
-   "team": "U-NEXT Pirates",
-   "team_id": "T007",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
-   "last": 0,
-   "owners": [
-    "渡邊"
-   ]
-  },
-  {
-   "name": "朝倉 康心",
-   "team": "U-NEXT Pirates",
-   "team_id": "T007",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
-   "last": 0,
-   "owners": [
-    "盛輔"
-   ]
-  },
-  {
    "name": "多井 隆晴",
    "team": "渋谷ABEMAS",
    "team_id": "T004",
@@ -274,32 +274,6 @@
   },
   {
    "name": "白鳥 翔",
-   "team": "渋谷ABEMAS",
-   "team_id": "T004",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
-   "last": 0,
-   "owners": [
-    "渡邊"
-   ]
-  },
-  {
-   "name": "松本 吉弘",
-   "team": "渋谷ABEMAS",
-   "team_id": "T004",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
-   "last": 0,
-   "owners": [
-    "宮下"
-   ]
-  },
-  {
-   "name": "日向 藍子",
    "team": "渋谷ABEMAS",
    "team_id": "T004",
    "games": 0,
@@ -514,19 +488,6 @@
    ]
   },
   {
-   "name": "佐々木 寿人",
-   "team": "KONAMI 麻雀格闘倶楽部",
-   "team_id": "T003",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
-   "last": 0,
-   "owners": [
-    "松井"
-   ]
-  },
-  {
    "name": "高宮 まり",
    "team": "KONAMI 麻雀格闘倶楽部",
    "team_id": "T003",
@@ -548,19 +509,6 @@
    "last": 0,
    "owners": [
     "盛輔"
-   ]
-  },
-  {
-   "name": "滝沢 和典",
-   "team": "KONAMI 麻雀格闘倶楽部",
-   "team_id": "T003",
-   "games": 0,
-   "points": 0.0,
-   "avg_rank": 0.0,
-   "top": 0,
-   "last": 0,
-   "owners": [
-    "杉江"
    ]
   },
   {
@@ -614,104 +562,205 @@
    "owners": [
     "盛輔"
    ]
+  },
+  {
+   "name": "佐々木 寿人",
+   "team": "KONAMI 麻雀格闘倶楽部",
+   "team_id": "T003",
+   "games": 1,
+   "points": -14.0,
+   "avg_rank": 3.0,
+   "top": 0,
+   "last": 0,
+   "owners": [
+    "松井"
+   ]
+  },
+  {
+   "name": "日向 藍子",
+   "team": "渋谷ABEMAS",
+   "team_id": "T004",
+   "games": 1,
+   "points": -19.5,
+   "avg_rank": 3.0,
+   "top": 0,
+   "last": 0,
+   "owners": [
+    "渡邊"
+   ]
+  },
+  {
+   "name": "滝沢 和典",
+   "team": "KONAMI 麻雀格闘倶楽部",
+   "team_id": "T003",
+   "games": 1,
+   "points": -42.3,
+   "avg_rank": 4.0,
+   "top": 0,
+   "last": 1,
+   "owners": [
+    "杉江"
+   ]
+  },
+  {
+   "name": "三浦 智博",
+   "team": "EARTH JETS",
+   "team_id": "T011",
+   "games": 1,
+   "points": -48.1,
+   "avg_rank": 4.0,
+   "top": 0,
+   "last": 1,
+   "owners": [
+    "杉江"
+   ]
   }
  ],
- "history": [],
+ "history": [
+  {
+   "date": "2026-09-15",
+   "games": 8,
+   "totals": {
+    "盛輔": 54.7,
+    "松井": 44.0,
+    "宮下": 7.4,
+    "吉國": 0.0,
+    "金城": 0.0,
+    "蓮池": 0.0,
+    "宏樹": 0.0,
+    "渡邊": -15.7,
+    "杉江": -90.4
+   }
+  }
+ ],
  "settlement": {
   "final": false,
   "rows": [
    {
-    "name": "吉國",
-    "rank": 0,
+    "name": "盛輔",
+    "rank": 30000,
     "yakuman": 0,
     "chombo": 0,
     "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
-   },
-   {
-    "name": "金城",
-    "rank": 0,
-    "yakuman": 0,
-    "chombo": 0,
-    "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
-   },
-   {
-    "name": "杉江",
-    "rank": 0,
-    "yakuman": 0,
-    "chombo": 0,
-    "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
-   },
-   {
-    "name": "宮下",
-    "rank": 0,
-    "yakuman": 0,
-    "chombo": 0,
-    "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
-   },
-   {
-    "name": "蓮池",
-    "rank": 0,
-    "yakuman": 0,
-    "chombo": 0,
-    "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
+    "mvp": -1000,
+    "last": 1000,
+    "total": 30000
    },
    {
     "name": "松井",
-    "rank": 0,
+    "rank": 20000,
     "yakuman": 0,
     "chombo": 0,
     "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
+    "mvp": 8000,
+    "last": 1000,
+    "total": 29000
    },
    {
-    "name": "盛輔",
-    "rank": 0,
+    "name": "宮下",
+    "rank": 10000,
     "yakuman": 0,
     "chombo": 0,
     "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
+    "mvp": -1000,
+    "last": 1000,
+    "total": 10000
+   },
+   {
+    "name": "吉國",
+    "rank": -2500,
+    "yakuman": 0,
+    "chombo": 0,
+    "scandal": 0,
+    "mvp": -1000,
+    "last": 1000,
+    "total": -2500
+   },
+   {
+    "name": "金城",
+    "rank": -2500,
+    "yakuman": 0,
+    "chombo": 0,
+    "scandal": 0,
+    "mvp": -1000,
+    "last": 1000,
+    "total": -2500
+   },
+   {
+    "name": "蓮池",
+    "rank": -2500,
+    "yakuman": 0,
+    "chombo": 0,
+    "scandal": 0,
+    "mvp": -1000,
+    "last": 1000,
+    "total": -2500
    },
    {
     "name": "宏樹",
-    "rank": 0,
+    "rank": -2500,
     "yakuman": 0,
     "chombo": 0,
     "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
+    "mvp": -1000,
+    "last": 1000,
+    "total": -2500
    },
    {
     "name": "渡邊",
-    "rank": 0,
+    "rank": -20000,
     "yakuman": 0,
     "chombo": 0,
     "scandal": 0,
-    "mvp": 0,
-    "last": 0,
-    "total": 0
+    "mvp": -1000,
+    "last": 1000,
+    "total": -20000
+   },
+   {
+    "name": "杉江",
+    "rank": -30000,
+    "yakuman": 0,
+    "chombo": 0,
+    "scandal": 0,
+    "mvp": -1000,
+    "last": -8000,
+    "total": -39000
    }
   ],
-  "log": []
+  "log": [
+   {
+    "date": "",
+    "label": "MVP（暫定）",
+    "detail": "逢川 恵夢 +58.0",
+    "effects": {
+     "盛輔": -1000,
+     "宮下": -1000,
+     "吉國": -1000,
+     "金城": -1000,
+     "蓮池": -1000,
+     "宏樹": -1000,
+     "渡邊": -1000,
+     "杉江": -1000,
+     "松井": 8000
+    }
+   },
+   {
+    "date": "",
+    "label": "最下位（暫定）",
+    "detail": "三浦 智博 -48.1",
+    "effects": {
+     "盛輔": 1000,
+     "松井": 1000,
+     "宮下": 1000,
+     "吉國": 1000,
+     "金城": 1000,
+     "蓮池": 1000,
+     "宏樹": 1000,
+     "渡邊": 1000,
+     "杉江": -8000
+    }
+   }
+  ]
  },
- "updated_at": "2026-09-14 10:42"
+ "updated_at": "2026-09-15 04:52"
 }
