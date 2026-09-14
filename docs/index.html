@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mリーグ ドラフト</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef;
+  --surface: #fcfcfb;
+  --line: #e3e1da;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --muted: #8a8880;
+  --accent: #2a78d6;
+  --accent-soft: #e6f0fb;
+  --gray-line: #cfcdc5;
+  --gold: #b88a00;
+  --pos: #2a78d6;
+  --neg: #e34948;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #111110;
+    --surface: #1a1a19;
+    --line: #2f2e2b;
+    --text: #ffffff;
+    --text-2: #c3c2b7;
+    --muted: #8f8d85;
+    --accent: #3987e5;
+    --accent-soft: #1d2a3a;
+    --gray-line: #4a4944;
+    --gold: #d9a520;
+    --pos: #3987e5;
+    --neg: #e66767;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+main { max-width: 760px; margin: 0 auto; padding: 20px 14px 48px; }
+header h1 { font-size: 22px; margin: 0; letter-spacing: .02em; }
+header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+section { margin-top: 26px; }
+h2 { font-size: 15px; margin: 0 0 10px; color: var(--text-2); font-weight: 600; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+
+/* 順位表 */
+.standings { list-style: none; margin: 0; padding: 0; }
+.owner { border-top: 1px solid var(--line); }
+.owner:first-child { border-top: 0; }
+.owner > button {
+  all: unset; box-sizing: border-box; width: 100%; cursor: pointer;
+  display: grid; grid-template-columns: 34px 1fr auto 20px; align-items: center; gap: 10px;
+  padding: 12px 14px;
+}
+.owner > button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 12px; }
+.owner.selected > button { background: var(--accent-soft); }
+.owner:first-child.selected > button { border-radius: 12px 12px 0 0; }
+.rank { font-size: 20px; font-weight: 700; text-align: center; }
+.rank.r1 { color: var(--gold); }
+.oname { font-weight: 600; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.move { display: block; font-size: 12px; color: var(--muted); font-weight: 400; }
+.total { font-size: 19px; font-weight: 700; text-align: right; }
+.picks { grid-column: 2 / 4; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin-top: -4px; }
+.pick { --base: var(--bg); background: var(--base); border-radius: 6px; padding: 3px 4px; text-align: center; line-height: 1.3; min-width: 0; }
+.owner.selected .pick { --base: var(--surface); }
+/* 個人ptの符号で色相、大きさで濃さ(--k)を変える */
+.pick.pos { background: color-mix(in srgb, var(--pos) var(--k), var(--base)); }
+.pick.neg { background: color-mix(in srgb, var(--neg) var(--k), var(--base)); }
+.pick.pos span, .pick.neg span { color: var(--text-2); }
+.pick span { display: block; font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick b { display: block; font-size: 13px; font-weight: 600; }
+.total small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
+.chev { color: var(--muted); transition: transform .15s; }
+.owner.open .chev { transform: rotate(90deg); }
+.roster { display: none; padding: 0 14px 12px 58px; }
+.owner.open .roster { display: block; }
+.roster table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.roster td { padding: 5px 0; border-top: 1px dashed var(--line); }
+.roster td.team { color: var(--muted); font-size: 12px; padding-left: 8px; }
+.roster td.num { text-align: right; white-space: nowrap; }
+.roster td.games { color: var(--muted); font-size: 12px; padding-right: 10px; }
+
+/* グラフ */
+.chart-wrap { padding: 12px 8px 6px; position: relative; }
+.chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart-note { font-size: 12px; color: var(--muted); padding: 0 8px 8px; }
+.tooltip {
+  position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 6px 9px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12);
+  white-space: nowrap; z-index: 2;
+}
+.tooltip b { display: block; margin-bottom: 2px; }
+.tooltip div { display: flex; justify-content: space-between; gap: 14px; color: var(--text-2); }
+.tooltip div.sel { color: var(--text); font-weight: 700; }
+.empty { padding: 28px 14px; text-align: center; color: var(--muted); }
+
+/* 選手ランキング */
+.toolbar { display: flex; gap: 6px; margin-bottom: 8px; }
+.toolbar button {
+  font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--text-2);
+}
+.toolbar button[aria-pressed="true"] { background: var(--text); color: var(--surface); border-color: var(--text); }
+.table-scroll { overflow-x: auto; }
+table.players { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.players th { font-size: 12px; font-weight: 500; color: var(--muted); text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.players td { padding: 7px 8px; border-top: 1px solid var(--line); white-space: nowrap; }
+table.players tr:first-child td { border-top: 0; }
+table.players .num { text-align: right; }
+table.players .sub { color: var(--muted); font-size: 12px; }
+table.players tr.mine td { background: var(--accent-soft); }
+.tag { display: inline-block; font-size: 12px; padding: 0 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-2); }
+/* 収支 */
+table.money { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.money th { font-size: 12px; font-weight: 500; color: var(--muted); text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.money th:first-child, table.money td:first-child { text-align: left; }
+table.money td { padding: 8px 10px; border-top: 1px solid var(--line); text-align: right; white-space: nowrap; }
+table.money tr:first-child td { border-top: 0; }
+table.money td.sum { font-weight: 700; font-size: 15px; }
+table.money td.zero { color: var(--muted); }
+.events { list-style: none; margin: 10px 0 0; padding: 0; }
+.events li { padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px; }
+.events li:first-child { border-top: 0; }
+.events .ev-head { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.events .ev-label { font-weight: 700; }
+.events .ev-date { color: var(--muted); font-size: 12px; }
+.events .ev-eff { color: var(--text-2); font-size: 13px; margin-top: 2px; }
+details.rules { margin-top: 10px; font-size: 14px; }
+details.rules summary { cursor: pointer; color: var(--text-2); padding: 10px 14px; }
+details.rules .body { padding: 0 14px 12px; color: var(--text-2); }
+details.rules table { border-collapse: collapse; margin: 4px 0 10px; }
+details.rules td { padding: 2px 14px 2px 0; }
+details.rules td:last-child { text-align: right; }
+details.rules ul { margin: 0; padding-left: 1.2em; }
+footer { margin-top: 30px; font-size: 12px; color: var(--muted); text-align: center; }
+footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 id="title">Mリーグ ドラフト</h1>
+    <p id="updated">読み込み中…</p>
+  </header>
+
+  <section>
+    <h2>オーナー順位</h2>
+    <ol class="standings card" id="standings"></ol>
+  </section>
+
+  <section>
+    <h2 id="money-title">収支</h2>
+    <div class="card table-scroll">
+      <table class="money">
+        <thead><tr><th>オーナー</th><th>順位賞</th><th>ボーナス</th><th>合計</th></tr></thead>
+        <tbody id="money"></tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <ul class="events" id="events"></ul>
+    </div>
+    <details class="rules card">
+      <summary>ルール</summary>
+      <div class="body">
+        <b>順位賞</b>（レギュラーシーズン終了時の合計pt順位。同点は該当順位の賞金を平均）
+        <table>
+          <tr><td>1位</td><td>+30,000</td><td style="padding-left:24px">6位</td><td>−5,000</td></tr>
+          <tr><td>2位</td><td>+20,000</td><td style="padding-left:24px">7位</td><td>−10,000</td></tr>
+          <tr><td>3位</td><td>+10,000</td><td style="padding-left:24px">8位</td><td>−20,000</td></tr>
+          <tr><td>4位</td><td>+5,000</td><td style="padding-left:24px">9位</td><td>−30,000</td></tr>
+          <tr><td>5位</td><td>0</td><td></td><td></td></tr>
+        </table>
+        <b>ボーナス</b>（指名選手が該当したオーナーに発生。「all」は他の8人全員と1人ずつやりとり）
+        <ul>
+          <li>役満：+1,000all。放銃した選手を指名しているオーナーは1,000の代わりに3,000を払う（上がったオーナー +10,000）</li>
+          <li>チョンボ：−1,000all</li>
+          <li>スキャンダル：−1,000all／起訴スキャンダル：−3,000all</li>
+          <li>MVP（全選手の個人pt 1位）：+1,000all</li>
+          <li>最下位（全選手の個人pt 最下位）：−1,000all</li>
+        </ul>
+        指名されていない選手が該当した場合は発生しません。対象はレギュラーシーズンのみ。
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>合計ポイントの推移</h2>
+    <div class="card">
+      <div class="chart-wrap" id="chart"></div>
+      <div class="chart-note" id="chart-note"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>選手ランキング</h2>
+    <div class="toolbar" role="group" aria-label="表示する選手">
+      <button type="button" data-filter="all" aria-pressed="true">全選手</button>
+      <button type="button" data-filter="picked" aria-pressed="false">指名選手</button>
+    </div>
+    <div class="card table-scroll">
+      <table class="players">
+        <thead><tr><th>#</th><th>選手</th><th>オーナー</th><th class="num">pt</th></tr></thead>
+        <tbody id="players"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>成績データ: <a href="https://m-league.jp/stats" target="_blank" rel="noopener">M.LEAGUE 公式 チーム成績表</a>（レギュラーシーズン）</footer>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => (n > 0 ? "+" : n < 0 ? "−" : "±") + Math.abs(n).toFixed(1);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let DATA, selected = null, filter = "all";
+
+fetch("data.json", { cache: "no-store" })
+  .then((r) => r.json())
+  .then((d) => { DATA = d; selected = d.owners[0]?.name; render(); })
+  .catch(() => { $("updated").textContent = "データを読み込めませんでした"; });
+
+function render() {
+  document.title = DATA.title;
+  $("title").textContent = DATA.title;
+  $("updated").textContent = `最終更新 ${DATA.updated_at}（JST）`;
+  renderStandings();
+  renderSettlement();
+  renderChart();
+  renderPlayers();
+}
+
+function previousRanks() {
+  const h = DATA.history;
+  if (h.length < 2) return null;
+  const prev = h[h.length - 2].totals;
+  const names = Object.keys(prev).sort((a, b) => prev[b] - prev[a]);
+  const ranks = {};
+  names.forEach((n, i) => { ranks[n] = i && prev[n] === prev[names[i - 1]] ? ranks[names[i - 1]] : i + 1; });
+  return { ranks, totals: prev };
+}
+
+function renderStandings() {
+  const byName = Object.fromEntries(DATA.players.map((p) => [p.name, p]));
+  const prev = previousRanks();
+  $("standings").innerHTML = DATA.owners.map((o) => {
+    let move = "";
+    if (prev && prev.ranks[o.name] != null) {
+      const d = prev.ranks[o.name] - o.rank;
+      const diff = o.total - prev.totals[o.name];
+      move = `${d > 0 ? "▲" + d : d < 0 ? "▼" + -d : "→"}　前回比 ${fmt(diff)}`;
+    }
+    const surnames = o.players.map((n) => n.split(" ")[0]);
+    const picks = o.players.map((n, i) => {
+      const label = surnames.indexOf(surnames[i]) === surnames.lastIndexOf(surnames[i]) ? surnames[i] : n;
+      const pt = byName[n].points;
+      const k = Math.round(12 + Math.min(Math.abs(pt) / 300, 1) * 28);
+      return `<span class="pick ${pt > 0 ? "pos" : pt < 0 ? "neg" : ""}" style="--k:${k}%" title="${esc(n)}"><span>${esc(label)}</span><b>${fmt(pt)}</b></span>`;
+    }).join("");
+    const rows = o.players.map((n) => {
+      const p = byName[n];
+      return `<tr><td>${esc(p.name)}</td><td class="team">${esc(p.team)}</td>
+        <td class="num games">${p.games}試合</td><td class="num">${fmt(p.points)}</td></tr>`;
+    }).join("");
+    return `<li class="owner${o.name === selected ? " selected" : ""}" data-name="${esc(o.name)}">
+      <button type="button" aria-expanded="false">
+        <span class="rank${o.rank === 1 ? " r1" : ""}">${o.rank}</span>
+        <span class="oname">${esc(o.name)}${move ? `<span class="move">${move}</span>` : ""}</span>
+        <span class="total">${fmt(o.total)}<small>pt</small></span>
+        <span class="chev" aria-hidden="true">›</span>
+        <span class="picks">${picks}</span>
+      </button>
+      <div class="roster"><table>${rows}</table></div>
+    </li>`;
+  }).join("");
+  document.querySelectorAll(".owner > button").forEach((btn) => btn.addEventListener("click", () => {
+    const li = btn.parentElement;
+    const open = !li.classList.contains("open");
+    li.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", open);
+    selected = li.dataset.name;
+    document.querySelectorAll(".owner").forEach((x) => x.classList.toggle("selected", x === li));
+    renderChart();
+    renderPlayers();
+  }));
+}
+
+const yen = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + Math.abs(n).toLocaleString("ja-JP");
+
+function renderSettlement() {
+  const st = DATA.settlement;
+  $("money-title").textContent = `収支（${st.final ? "確定" : "暫定"}）`;
+  const rows = [...st.rows].sort((a, b) => b.total - a.total);
+  const cell = (v, cls = "") => `<td class="${cls}${v === 0 ? " zero" : ""}">${v === 0 ? "0" : yen(v)}</td>`;
+  $("money").innerHTML = rows.map((r) => {
+    const bonus = r.yakuman + r.chombo + r.scandal + r.mvp + r.last;
+    return `<tr><td>${esc(r.name)}</td>${cell(r.rank)}${cell(bonus)}${cell(r.total, "sum")}</tr>`;
+  }).join("");
+
+  if (!st.log.length) {
+    $("events").innerHTML = `<li class="ev-eff">役満・チョンボ・スキャンダル・MVP・最下位の発生はまだありません</li>`;
+    return;
+  }
+  $("events").innerHTML = st.log.map((e) => {
+    const vals = Object.values(e.effects);
+    const counts = {};
+    vals.forEach((v) => { counts[v] = (counts[v] || 0) + 1; });
+    const common = Object.keys(counts).length ? +Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0] : 0;
+    const main = Object.entries(e.effects).filter(([, v]) => v !== common || counts[common] === 1).sort((a, b) => b[1] - a[1]);
+    const rest = counts[common] > 1 ? [`他 ${yen(common)}`] : [];
+    const eff = main.length || rest.length
+      ? [...main.map(([n, v]) => `${esc(n)} ${yen(v)}`), ...rest].join("／")
+      : "指名されていない選手のため発生なし";
+    return `<li><div class="ev-head"><span class="ev-label">${esc(e.label)}</span><span>${esc(e.detail)}</span>${e.date ? `<span class="ev-date">${esc(e.date)}</span>` : ""}</div>
+      <div class="ev-eff">${eff}</div></li>`;
+  }).join("");
+}
+
+function renderChart() {
+  const h = DATA.history;
+  const el = $("chart");
+  if (h.length === 0) {
+    el.innerHTML = `<div class="empty">シーズン開幕後、試合結果が入ると表示されます</div>`;
+    $("chart-note").textContent = "";
+    return;
+  }
+  const W = Math.max(300, el.clientWidth - 16), H = W < 520 ? 230 : 300, m = { t: 12, r: W < 520 ? 70 : 96, b: 26, l: 40 };
+  const series = [{ date: "開幕", totals: Object.fromEntries(DATA.owners.map((o) => [o.name, 0])) }, ...h];
+  const names = DATA.owners.map((o) => o.name);
+  const vals = series.flatMap((s) => names.map((n) => s.totals[n] ?? 0));
+  let lo = Math.min(0, ...vals), hi = Math.max(0, ...vals);
+  const step = niceStep((hi - lo) / 5 || 50);
+  lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+  const x = (i) => m.l + (series.length === 1 ? 0 : (i / (series.length - 1)) * (W - m.l - m.r));
+  const y = (v) => m.t + (1 - (v - lo) / (hi - lo || 1)) * (H - m.t - m.b);
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="オーナー別合計ポイントの推移">`;
+  for (let v = lo; v <= hi + 1e-9; v += step) {
+    svg += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="${v === 0 ? 1.5 : 1}"/>
+      <text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
+  }
+  const ticks = [0, Math.floor((series.length - 1) / 2), series.length - 1].filter((v, i, a) => a.indexOf(v) === i);
+  ticks.forEach((i) => {
+    svg += `<text x="${x(i)}" y="${H - 6}" text-anchor="${i === 0 ? "start" : i === series.length - 1 ? "end" : "middle"}" font-size="11" fill="var(--muted)">${shortDate(series[i].date)}</text>`;
+  });
+  const path = (n) => series.map((s, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(s.totals[n] ?? 0).toFixed(1)}`).join("");
+  names.filter((n) => n !== selected).forEach((n) => {
+    svg += `<path d="${path(n)}" fill="none" stroke="var(--gray-line)" stroke-width="1.5" stroke-linejoin="round"/>`;
+  });
+  const last = series.length - 1;
+  svg += `<path d="${path(selected)}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="${x(last)}" cy="${y(series[last].totals[selected] ?? 0)}" r="4.5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+    <text x="${x(last) + 10}" y="${y(series[last].totals[selected] ?? 0) + 4}" font-size="12" font-weight="700" fill="var(--text)">${esc(selected)}</text>
+    <line id="xhair" y1="${m.t}" y2="${H - m.b}" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>
+    <rect x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent" id="hit"/>
+  </svg><div class="tooltip" id="tip" hidden></div>`;
+  el.innerHTML = svg;
+  $("chart-note").textContent = `青線: ${selected}（順位表をタップで切替）／灰線: 他のオーナー`;
+
+  const svgEl = el.querySelector("svg"), tip = $("tip"), xh = $("xhair");
+  const move = (ev) => {
+    const r = svgEl.getBoundingClientRect();
+    const px = ((ev.clientX - r.left) / r.width) * W;
+    const i = Math.max(0, Math.min(last, Math.round(((px - m.l) / (W - m.l - m.r)) * last)));
+    xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("visibility", "visible");
+    const rows = names.map((n) => [n, series[i].totals[n] ?? 0]).sort((a, b) => b[1] - a[1]);
+    tip.innerHTML = `<b>${esc(series[i].date)}</b>` + rows.map(([n, v]) => `<div class="${n === selected ? "sel" : ""}"><span>${esc(n)}</span><span>${fmt(v)}</span></div>`).join("");
+    tip.hidden = false;
+    const tx = (x(i) / W) * r.width;
+    tip.style.left = (tx > r.width / 2 ? tx - tip.offsetWidth - 12 : tx + 12) + "px";
+    tip.style.top = "8px";
+  };
+  const hide = () => { tip.hidden = true; xh.setAttribute("visibility", "hidden"); };
+  $("hit").addEventListener("pointermove", move);
+  $("hit").addEventListener("pointerdown", move);
+  $("hit").addEventListener("pointerleave", hide);
+}
+
+function niceStep(raw) {
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  return [1, 2, 5, 10].map((k) => k * p).find((s) => s >= raw);
+}
+function shortDate(d) {
+  const m = /^\d{4}-(\d{2})-(\d{2})$/.exec(d);
+  return m ? `${+m[1]}/${+m[2]}` : d;
+}
+
+function renderPlayers() {
+  const list = DATA.players.filter((p) => filter === "all" || p.owners.length);
+  $("players").innerHTML = list.map((p, i) => `
+    <tr class="${p.owners.includes(selected) ? "mine" : ""}">
+      <td class="sub">${i + 1}</td>
+      <td>${esc(p.name)}<br><span class="sub">${esc(p.team)}</span></td>
+      <td>${p.owners.map((o) => `<span class="tag">${esc(o)}</span>`).join(" ") || '<span class="sub">—</span>'}</td>
+      <td class="num"><b>${fmt(p.points)}</b><br><span class="sub">${p.games}試合</span></td>
+    </tr>`).join("");
+}
+let resizeTimer;
+window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => DATA && renderChart(), 150); });
+document.querySelectorAll(".toolbar button").forEach((b) => b.addEventListener("click", () => {
+  filter = b.dataset.filter;
+  document.querySelectorAll(".toolbar button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  renderPlayers();
+}));
+</script>
+</body>
+</html>
