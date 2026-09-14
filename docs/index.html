@@ -246,8 +246,13 @@ function previousRanks() {
   return { ranks, totals: prev };
 }
 
+const surname = (name) => name.split(" ")[0];
+
 function renderStandings() {
   const byName = Object.fromEntries(DATA.players.map((p) => [p.name, p]));
+  // 全選手の中で名字が重なる選手はフルネームで出す
+  const surnameCount = {};
+  DATA.players.forEach((p) => { surnameCount[surname(p.name)] = (surnameCount[surname(p.name)] || 0) + 1; });
   const prev = previousRanks();
   $("standings").innerHTML = DATA.owners.map((o) => {
     let move = "";
@@ -256,9 +261,8 @@ function renderStandings() {
       const diff = o.total - prev.totals[o.name];
       move = `${d > 0 ? "▲" + d : d < 0 ? "▼" + -d : "→"}　前回比 ${fmt(diff)}`;
     }
-    const surnames = o.players.map((n) => n.split(" ")[0]);
-    const picks = o.players.map((n, i) => {
-      const label = surnames.indexOf(surnames[i]) === surnames.lastIndexOf(surnames[i]) ? surnames[i] : n;
+    const picks = o.players.map((n) => {
+      const label = surnameCount[surname(n)] > 1 ? n.replace(/\s+/g, "") : surname(n);
       const pt = byName[n].points;
       const k = Math.round(12 + Math.min(Math.abs(pt) / 300, 1) * 28);
       return `<span class="pick ${pt > 0 ? "pos" : pt < 0 ? "neg" : ""}" style="--k:${k}%" title="${esc(n)}"><span>${esc(label)}</span><b>${fmt(pt)}</b></span>`;
