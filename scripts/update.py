@@ -254,7 +254,9 @@ def main():
 
     now = datetime.now(JST)
     total_games = sum(p["games"] for p in players)
-    snapshot = {"date": now.strftime("%Y-%m-%d"), "games": total_games, "totals": {o["name"]: o["total"] for o in owners}}
+    # 試合は夜なので、正午より前の取得は前日の試合として記録する
+    game_day = (now - timedelta(hours=12)).strftime("%Y-%m-%d")
+    snapshot = {"date": game_day, "games": total_games, "totals": {o["name"]: o["total"] for o in owners}}
     if total_games > 0:
         if history and history[-1]["date"] == snapshot["date"]:
             history[-1] = snapshot

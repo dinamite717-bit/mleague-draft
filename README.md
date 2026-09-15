@@ -16,7 +16,7 @@
 | `scripts/update.py` | 公式サイトから取得して `docs/data.json` を作る(標準ライブラリのみ) |
 | `docs/index.html` | 表示ページ(順位表・推移グラフ・選手ランキング) |
 | `docs/data.json` | 集計結果と日ごとの推移(自動生成) |
-| `.github/workflows/update.yml` | 毎日 0:30 / 8:00 JST に自動更新 |
+| `.github/workflows/update.yml` | 毎日 22:47〜7:47 JST に6回自動更新 |
 
 ## 初期設定(1回だけ)
 
